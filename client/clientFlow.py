@@ -46,7 +46,7 @@ def main():
         request_packet = msgFormatHandler.to_request_format(
             num_rounds,
             team_name
-        )
+        ) 
         net.send(request_packet)
         play = Play(net,ui)
         play.start_game(num_rounds)
