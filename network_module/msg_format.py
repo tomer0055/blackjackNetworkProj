@@ -18,7 +18,7 @@ class msgFormatHandler:
             server_name_bytes = server_name_bytes.ljust(32, b'\x00')  
             return magic_cookie + message_type + port_bytes + server_name_bytes
     @staticmethod    
-    def to_request_format(self, num_rounds, client_team_name):
+    def to_request_format( num_rounds, client_team_name):
             magic_cookie = msgFormatHandler.__magic_cookie.to_bytes(msgFormatHandler.__magic_cookie_size, 'big')
             message_type = msgFormatHandler.__request_msg_type.to_bytes(msgFormatHandler.__msg_type_size, 'big')
             num_rounds_byte = num_rounds.to_bytes(1, 'big')
@@ -27,7 +27,7 @@ class msgFormatHandler:
             return magic_cookie + message_type + num_rounds_byte + client_team_name_bytes
     
     @staticmethod    
-    def to_payload_format_client(self, player_decision):
+    def to_payload_format_client(player_decision):
         magic_cookie = msgFormatHandler.__magic_cookie.to_bytes(msgFormatHandler.__magic_cookie_size, 'big')
         message_type = msgFormatHandler.__payload_client_msg_type.to_bytes(msgFormatHandler.__msg_type_size, 'big')
         decision_bytes = player_decision.encode('utf-8')[:5]
@@ -36,7 +36,7 @@ class msgFormatHandler:
     
     # magic_cookie (4 bytes) + message_type (1 byte) + round_result (1 byte) + card_rank (2 bytes) + card_suit (1 byte)
     @staticmethod
-    def to_payload_format_server(self, round_result, card_rank, card_suit):
+    def to_payload_format_server(round_result, card_rank, card_suit):
         magic_cookie = msgFormatHandler.__magic_cookie.to_bytes(msgFormatHandler.__magic_cookie_size, 'big')
         message_type = msgFormatHandler.__payload_server_msg_type.to_bytes(msgFormatHandler.__msg_type_size, 'big')  
         round_result_byte = round_result.to_bytes(1, 'big')
@@ -46,7 +46,7 @@ class msgFormatHandler:
 
     # magic_cookie (4 bytes) + message_type (1 byte) + round_result (1 byte) + card_rank (2 bytes) + card_suit (1 byte)
     @staticmethod
-    def client_receive_payload_parse(self, data):
+    def client_receive_payload_parse(data):
         if len(data) < 7:
             return None  
         magic_cookie = int.from_bytes(data[0:4], 'big')
@@ -72,7 +72,7 @@ class msgFormatHandler:
         return (tcp_port, server_name)
 
     @staticmethod
-    def server_receive_payload_parse(self, data):
+    def server_receive_payload_parse(data):
         if len(data) < 6:
             return None  
         magic_cookie = int.from_bytes(data[0:4], 'big')
@@ -84,7 +84,7 @@ class msgFormatHandler:
         return player_decision
     # magic_cookie (4 bytes) + message_type (1 byte) + num_rounds (1 byte) + team_name (32 bytes)
     @staticmethod
-    def server_receive_init_request(self, data):
+    def server_receive_init_request( data):
         if len(data) < 38:
             return None  
         magic_cookie = int.from_bytes(data[0:4], 'big')
