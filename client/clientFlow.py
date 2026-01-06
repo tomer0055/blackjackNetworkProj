@@ -1,15 +1,7 @@
-<<<<<<< HEAD
-from clientNetwork import clientNetwork
-from network_module.msg_format import msgFormatHandler
-from play import Play
-from view import view
-=======
 from client.clientNetwork import clientNetwork
 from network_module.msg_format import msgFormatHandler
 from client.play import Play
 from client.view import view
->>>>>>> 19c88679941f8cae0a53b40c53616dde515278ef
-
 
 def main():
     ui = view()
@@ -18,13 +10,7 @@ def main():
     net = clientNetwork()
 
     while True:
-        try:
-            num_rounds = int(input("Enter number of rounds to play: "))
-            if num_rounds <= 0:
-                continue
-        except ValueError:
-            continue
-
+       
         # Listen for UDP OFFER message
         data, server_ip = net.receive_udp()
 
@@ -42,6 +28,16 @@ def main():
         except Exception as e:
             ui.show_error(f"Failed to connect to server: {e}")
             continue
+        
+        while True:
+            try:
+                num_rounds = int(input("Enter number of rounds to play: "))
+                if num_rounds > 0:
+                    break
+            except ValueError:
+                pass
+            view.show_error("Please enter a valid positive number")
+            
         # Send initial REQUEST message
         request_packet = msgFormatHandler.to_request_format(
             num_rounds,
