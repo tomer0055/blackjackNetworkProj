@@ -1,5 +1,5 @@
 from clientNetwork import clientNetwork
-from msgFormatHandler import msgFormatHandler
+from network_module.msg_format import msgFormatHandler
 from play import Play
 from view import view
 
