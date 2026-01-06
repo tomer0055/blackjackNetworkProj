@@ -46,7 +46,7 @@ class msgFormatHandler:
 
     # magic_cookie (4 bytes) + message_type (1 byte) + round_result (1 byte) + card_rank (2 bytes) + card_suit (1 byte)
     @staticmethod
-    def client_recive_payload_parse(self, data):
+    def client_receive_payload_parse(self, data):
         if len(data) < 7:
             return None  
         magic_cookie = int.from_bytes(data[0:4], 'big')
@@ -59,7 +59,20 @@ class msgFormatHandler:
         return (round_result, card_rank, card_suit)
     # magic_cookie (4 bytes) + message_type (1 byte) + decision (5 bytes)
     @staticmethod
-    def server_recive_payload_parse(self, data):
+    def client_receive_offer(data):
+        if len(data) < 39:
+            return None  
+        magic_cookie = int.from_bytes(data[0:4], 'big')
+        message_type = data[4]
+        tcp_port = int.from_bytes(data[5:7], 'big')
+        server_name_bytes = data[7:39]
+        server_name = server_name_bytes.decode('utf-8').rstrip('\x00')
+        if magic_cookie != msgFormatHandler.__magic_cookie or message_type != msgFormatHandler.__offer_msg_type:
+            return None  
+        return (tcp_port, server_name)
+
+    @staticmethod
+    def server_receive_payload_parse(self, data):
         if len(data) < 6:
             return None  
         magic_cookie = int.from_bytes(data[0:4], 'big')
