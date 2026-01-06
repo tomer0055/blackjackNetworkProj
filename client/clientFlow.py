@@ -28,7 +28,11 @@ def main():
         except Exception as e:
             ui.show_error(f"Failed to connect to server: {e}")
             continue
-        
+        while True:
+            team_name = input("Enter your team name: ").strip()
+            if team_name:
+                break
+            view.show_error("Team name cannot be empty")        
         while True:
             try:
                 num_rounds = int(input("Enter number of rounds to play: "))
@@ -41,7 +45,7 @@ def main():
         # Send initial REQUEST message
         request_packet = msgFormatHandler.to_request_format(
             num_rounds,
-            "TEAM_CLIENT"
+            team_name
         )
         net.send(request_packet)
         play = Play(net)
