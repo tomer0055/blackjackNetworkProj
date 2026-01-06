@@ -1,11 +1,19 @@
+import random
+from card import card
 class deck:
-    cards = []
-    def __init__(self, cards):
-        self.cards = cards
+    def __init__(self):
+        self.cards = []
+        self.build()
+        self.shuffle()
+    def build(self): #we need to use numbers for protocol, later in view we will use good UX names
+        self.cards = [
+            card(rank, suit)
+            for suit in range(4)
+            for rank in range(1, 14)
+        ]
     def shuffle(self):
-        import random
         random.shuffle(self.cards)
-    def deal_card(self):
-        if len(self.cards) == 0:
-            return None
+    def draw(self):
+        if not self.cards:
+            raise RuntimeError("Deck is empty")
         return self.cards.pop()
