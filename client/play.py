@@ -1,4 +1,4 @@
-from network_module.msg_format import MsgFormatHandler
+from network_module.msg_format import msgFormatHandler
 
 class Play:
     def __init__(self, clientNet, view):
@@ -21,7 +21,7 @@ class Play:
             data = self.clientNet.receive_tcp()
 
             # 2. Parse payload using protocol handler
-            parsed = MsgFormatHandler.client_receive_payload_parse(data)
+            parsed = msgFormatHandler.client_receive_payload_parse(data)
             if parsed is None:
                 self.view.show_error("Received invalid payload, ignoring")
                 continue
@@ -41,7 +41,7 @@ class Play:
             decision = self.view.ask_player_decision()
 
             # 6. Send decision to server
-            packet = MsgFormatHandler.to_payload_format_client(decision)
+            packet = msgFormatHandler.to_payload_format_client(decision)
             self.clientNet.send(packet)
 
                 
