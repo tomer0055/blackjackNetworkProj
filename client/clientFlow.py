@@ -44,8 +44,8 @@ def main():
             "TEAM_CLIENT"
         )
         net.send(request_packet)
-        play = Play(net)
-        play.run(num_rounds)
+        play = Play(net,ui)
+        play.start_game(num_rounds)
         net.disconnect()
         ui.show_message("Waiting for new offers...\n")
 
