@@ -1,5 +1,6 @@
 import socket
 import network_module.msg_format as msg_format
+import thriw
 
 REQUEST_LEN = 38          # 4 + 1 + 1 + 32
 CLIENT_PAYLOAD_LEN = 10   # 4 + 1 + 5
@@ -54,7 +55,13 @@ class TcpClient:
         data = self._recv_exact(CLIENT_PAYLOAD_LEN)
         if data is None:
             return None
-        return msg_format.msgFormatHandler.server_recive_payload_parse(data)
+        str1 = msg_format.msgFormatHandler.server_receive_payload_parse(data)
+        if str1 is "Hittt":
+            return 1
+        elif str1 is "Stand":
+            return 0
+        else :
+            raise RuntimeError("Invalid decision received from client")
 
     def send_round_update(self, round_result: int, card_rank: int, card_suit: int):
         """
