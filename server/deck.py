@@ -1,5 +1,5 @@
 import random
-from card import card
+from server.card import card
 class deck:
     def __init__(self):
         self.cards = []

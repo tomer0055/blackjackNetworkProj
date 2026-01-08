@@ -2,7 +2,7 @@ import socket
 import threading
 from server.UdpMan import UdpMan
 
-TCP_PORT = 5000  # arbitrary, clients will learn it via UDP
+TCP_PORT = 54321  # arbitrary, clients will learn it via UDP
 
 def tcp_server():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
