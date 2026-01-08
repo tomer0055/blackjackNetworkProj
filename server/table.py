@@ -78,14 +78,16 @@ class table :
         d_card = self.dealer.get_hand()[0]
         p_hand = self.p.get_hand()[0]
         self.p.init_game()
+        print("Dealer's visible card:", d_card.get_value(), d_card.suit)
         while not self.round_over:
+            print("Player's hand:", [f"{card.rank} of {card.suit}" for card in self.p.get_hand()])
             decision = self.p.make_decision(self.round_result,d_card)
             if decision == 1:
                 self.player_hit()
-                self.p.tcp.send_round_update(self.round_result, self.p.get_hand()[-1].rank, self.p.get_hand()[-1].suit)
+                self.p.tcp.send_round_update(self.round_result, self.p.get_hand()[-1].get_value(), self.p.get_hand()[-1].suit)
             elif decision == 0:
                 self.player_stand()
-                self.p.tcp.send_round_update(self.round_result, self.p.get_hand()[-1].rank, self.p.get_hand()[-1].suit)
+                self.p.tcp.send_round_update(self.round_result, self.p.get_hand()[-1].get_value(), self.p.get_hand()[-1].suit)
 
             else:
                 raise ValueError("Invalid decision")

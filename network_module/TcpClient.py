@@ -75,7 +75,6 @@ class TcpClient:
         payload = msg_format.msgFormatHandler.to_payload_format_server(
             round_result, card_rank, card_suit
         )
-        print(f"round_res={round_result} , card_suit={card_suit} card value = {card_rank} Sending to client {self.addr} payload: {payload}")
         try:
             self.socket.sendall(payload)
         except Exception as e:
