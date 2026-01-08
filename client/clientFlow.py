@@ -22,17 +22,18 @@ def main():
         
         tcp_port, server_name = offer
         ui.show_received_offer(server_name, server_ip)
+        print(f"Attempting to connect to server at {server_ip}:{tcp_port}...")
         # Establish TCP connection to the server
         try:
             net.connect((server_ip, tcp_port))
         except Exception as e:
-            ui.show_error(f"Failed to connect to server: {e}")
+            ui.display_error(f"Failed to connect to server: {e}")
             continue
         while True:
             team_name = input("Enter your team name: ").strip()
             if team_name:
                 break
-            view.show_error("Team name cannot be empty")        
+            view.display_error("Team name cannot be empty")        
         while True:
             try:
                 num_rounds = int(input("Enter number of rounds to play: "))

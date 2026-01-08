@@ -13,7 +13,7 @@ class player(absPlayer):
         super().__init__(name)
         self.corrent_score = 0
         self.hand = []
-        self.tcp = TcpClient
+        self.tcp = tcp
 
     def add_tie(self):
         self.total_games += 1
@@ -30,15 +30,18 @@ class player(absPlayer):
         return self.wins / self.total_games
     def getTcpClient(self):
         return self.tcp
-    def make_decision(self,result, dealer_visible_card, player_visible_card):
+    def make_decision(self,result, card):
         # Send current hand and dealer's visible card to client
-        self.tcp.send_round_update(result, dealer_visible_card.rank, dealer_visible_card.suit)
+        print("card rank:", card.rank, "card suit:", card.suit)
+        self.tcp.send_round_update(result, card.rank, card.suit)
         res = self.tcp.recv_decision()
         return res
-    def init_game(self, dealer_visible_card):
-        self.tcp.send_round_update(0, self.get_hand[0].rank, self.get_hand[0].suit)
-        self.tcp.send_round_update(0, self.get_hand[1].rank, self.get_hand[1].suit)
-        self.tcp.send_round_update(0, dealer_visible_card.rank, dealer_visible_card.suit)
+    def init_game(self):
+        print("card rank:", self.hand[0].rank, "card suit:", self.hand[0].suit)
+        self.tcp.send_round_update(0, self.hand[0].rank, self.hand[0].get_suit_value())
+        self.tcp.send_round_update(0, self.hand[1].rank, self.hand[1].get_suit_value())
+        return
+
 
 
     

@@ -1,19 +1,21 @@
 import socket
 import time
 from network_module.msg_format import msgFormatHandler
+import threading
 
 
 BROADCAST_IP = "<broadcast>"
 BROADCAST_PORT = 13122    #from assignment
 BROADCAST_INTERVAL = 1.0  #in seconds
-tcp_port = 0
+
 
 
 class UdpMan:
+    tcp_p = 0
     def_tcp=54321
 
     def __init__(self, tcp_port: int):
-        self.tcp_port = tcp_port
+        self.tcp_p = tcp_port
         self.running = False
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
@@ -22,20 +24,25 @@ class UdpMan:
         self.start_broadcast()
 
     def start_broadcast(self):
+        th= threading.Thread(target=self._broadcast_loop, daemon=True)
+        th.start()
+    def _broadcast_loop(self):
+        offer_packet = msgFormatHandler.to_offer_format(self.tcp_p)
         self.running = True
-        offer_packet = msgFormatHandler.to_offer_format(self.tcp_port)
-
         while self.running:
             try:
                 self.sock.sendto(offer_packet, (BROADCAST_IP, BROADCAST_PORT))
                 time.sleep(BROADCAST_INTERVAL)
             except Exception:
-                break
+                raise RuntimeError("Failed to send UDP broadcast")
+
+       
     def get_tcp_port(self):
-        return self.tcp_port
+        return self.tcp_p
     def stop(self):
         self.running = False
         try:
             self.sock.close()
         except Exception:
-            pass
+            raise RuntimeError("Failed to close UDP socket")
+

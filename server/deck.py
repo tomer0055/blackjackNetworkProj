@@ -5,6 +5,7 @@ class deck:
         self.cards = []
         self.build()
         self.shuffle()
+   
     def build(self): #we need to use numbers for protocol, later in view we will use good UX names
         self.cards = [
             card(rank, suit)

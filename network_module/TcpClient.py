@@ -15,6 +15,8 @@ class TcpClient:
         if self.socket:
             try:
                 self.socket.close()
+            except Exception as e:
+                raise RuntimeError(f"Failed to close TCP connection: {e}")
             finally:
                 self.socket = None
 
@@ -56,9 +58,9 @@ class TcpClient:
         if data is None:
             return None
         str1 = msg_format.msgFormatHandler.server_receive_payload_parse(data)
-        if str1 is "Hittt":
+        if str1 == "Hittt":
             return 1
-        elif str1 is "Stand":
+        elif str1 == "Stand":
             return 0
         else :
             raise RuntimeError("Invalid decision received from client")
@@ -73,4 +75,10 @@ class TcpClient:
         payload = msg_format.msgFormatHandler.to_payload_format_server(
             round_result, card_rank, card_suit
         )
-        self.socket.sendall(payload)
+        print(f"round_res={round_result} , card_suit={card_suit} card value = {card_rank} Sending to client {self.addr} payload: {payload}")
+        try:
+            self.socket.sendall(payload)
+        except Exception as e:
+            self.close()
+            raise e
+        

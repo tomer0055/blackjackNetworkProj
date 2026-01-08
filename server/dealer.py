@@ -1,13 +1,13 @@
 from server.absPlayer import absPlayer
+from server.card import card
 
 
 class dealer(absPlayer):
-    deck = []
-    table= None
+    tb = None
     def __init__(self,table):
         super().__init__("Dealer")
-        self.corrent_score = 0
-        self.table = table
+        self.current_score = 0
+        self.tb = table
 
     def shuffle_deck(self, deck):
         self.deck = deck
@@ -20,11 +20,11 @@ class dealer(absPlayer):
 
     def check_if_higher_than_17(self):
         return self.current_score > 17
-    
-    def hit(self, card):
-        while(self.check_if_higher_than_17==False):
-            self.hand.append(card)
-            self.current_score += card.get_value()
-        self.table.end_round()
+
+
+    def hit_once(self, card:card):
+        self.hand.append(card)
+        self.current_score += card.get_value()
+       
 
 
