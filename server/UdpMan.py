@@ -6,10 +6,11 @@ from network_module.msg_format import msgFormatHandler
 BROADCAST_IP = "<broadcast>"
 BROADCAST_PORT = 13122    #from assignment
 BROADCAST_INTERVAL = 1.0  #in seconds
-tcp_port=0
-def_tsp_port=54321
+tcp_port = 0
+
 
 class UdpMan:
+    def_tcp=54321
 
     def __init__(self, tcp_port: int):
         self.tcp_port = tcp_port
@@ -30,7 +31,8 @@ class UdpMan:
                 time.sleep(BROADCAST_INTERVAL)
             except Exception:
                 break
-
+    def get_tcp_port(self):
+        return self.tcp_port
     def stop(self):
         self.running = False
         try:

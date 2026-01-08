@@ -1,6 +1,6 @@
 import socket
 import network_module.msg_format as msg_format
-import thriw
+
 
 REQUEST_LEN = 38          # 4 + 1 + 1 + 32
 CLIENT_PAYLOAD_LEN = 10   # 4 + 1 + 5

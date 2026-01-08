@@ -1,34 +1,49 @@
-import table,player
+from server.table import table
+from server import player
 import socket
-import UdpMan
+from server.UdpMan import UdpMan
 from  network_module.TcpClient  import TcpClient
+
+
 class gameManager:
-    tcp_port = UdpMan.tcp_port
-
-    if __name__ == "__main__":
-        #send udp broadcast
-        udp = UdpMan.UdpMan(tcp_port)
-        udp.start_broadcast()
-
-        #liss
-        sc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sc.bind(("",tcp_port))
-        sc.listen()
-
-        #create tcp client
-        conn, addr = sc.accept()
-        print(f"New TCP connection from {addr}")
-        tcp_cl= TcpClient(conn, addr)
-        p = player.player(tcp_cl,addr)
-        tcp_cl.recv_request()
+    def __init__(self):
+        pass
+    @staticmethod
+    def start_game(self,conn,addr):
+        tcp_cl = TcpClient(conn, addr)
+        num_rounds,client_team_name = tcp_cl.recv_request()
+        p = player.player(client_team_name,tcp_cl)
         tb = table.table(p)
-        tb.start_round()
+        
+        while(num_rounds>=0):
+            tb.game()
+            num_rounds-=1
+        
+
+    
+
+if __name__ == "__main__":
+    print("Server started")
+    #send udp broadcast
+    tcp_port = UdpMan.def_tcp
+    udp = UdpMan(tcp_port)
+    udp.start_broadcast()
+    
+    print(f"Server listening on TCP port {tcp_port}")
+    sc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sc.bind(("", tcp_port))
+    
+    sc.listen()
+
+while True:
+    conn, addr = sc.accept()
+    print(f"New TCP connection from {addr}")
+    start_game(conn,addr)
+            
 
 
-        #player
-        #start game
-        #manage game
-        #end game
-        print(gm.get_game("game1"))
-        gm.delete_game("game1")
-        print(gm.get_game("game1"))
+
+    #player
+    #start game
+    #manage game
+    #end game

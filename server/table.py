@@ -63,12 +63,18 @@ class table :
             player.add_loss()
             return PLAYER_LOSE
         
-        player.add_loss()
+        player.add_tie()
         return TIE
+
+
+
+
+
     def game(self):
         self.start_round()
         d_hand = self.dealer.get_hand()[0]
         p_hand = self.player.get_hand()[0]
+        player.init_game(d_hand[0])
         while not self.round_over:
             decision = self.player.make_decision(self.get_round_result,d_hand,p_hand)
             if decision == 1:
