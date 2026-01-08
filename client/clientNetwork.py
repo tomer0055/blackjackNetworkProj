@@ -4,7 +4,7 @@ class clientNetwork:
     def __init__(self):
         self.udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.udp_socket.setsockopt(socket.SOL_SOCKET,  socket.SO_REUSEPORT, 1)
+        #self.udp_socket.setsockopt(socket.SOL_SOCKET,  socket.SO_REUSEPORT, 1)
         self.udp_socket.bind(('', self.UDP_PORT))
         self.tcp_socket = None
     
@@ -26,7 +26,17 @@ class clientNetwork:
     def receive_tcp(self):
         if not self.tcp_socket:
             raise RuntimeError("Not connected to server")
-        return self.tcp_socket.recv(1024)
+
+        data = b''
+        PAYLOAD_SIZE = 9
+
+        while len(data) < PAYLOAD_SIZE:
+            chunk = self.tcp_socket.recv(PAYLOAD_SIZE - len(data))
+            if not chunk:
+                raise RuntimeError("Connection closed by server")
+            data += chunk
+
+        return data
     
     def disconnect(self):
         if self.tcp_socket:

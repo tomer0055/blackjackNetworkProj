@@ -10,6 +10,7 @@ class gameManager:
         pass
     @staticmethod
     def start_game(conn,addr):
+
         try:
             print(f"Starting game with client at {addr}")
             tcp_cl = TcpClient(conn, addr)
