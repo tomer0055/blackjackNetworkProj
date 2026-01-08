@@ -10,14 +10,21 @@ class gameManager:
         pass
     @staticmethod
     def start_game(conn,addr):
-        tcp_cl = TcpClient(conn, addr)
-        num_rounds,client_team_name = tcp_cl.recv_request()
-        p = player.player(client_team_name,tcp_cl)
-        tb = table(p)
-        
-        while(num_rounds>=0):
-            tb.game()
-            num_rounds-=1
+        try:
+            print(f"Starting game with client at {addr}")
+            tcp_cl = TcpClient(conn, addr)
+            num_rounds,client_team_name = tcp_cl.recv_request()
+            p = player.player(client_team_name,tcp_cl)
+            tb = table(p)
+            
+            while(num_rounds>=0):
+                tb.game()
+                num_rounds-=1
+        except Exception as e:
+            print(f"Error during game with client at {addr}: {e}")
+        finally:
+            print(f"Ending game with client at {addr}")
+            tcp_cl.close()
         
 
     

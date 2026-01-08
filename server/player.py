@@ -32,12 +32,10 @@ class player(absPlayer):
         return self.tcp
     def make_decision(self,result, card):
         # Send current hand and dealer's visible card to client
-        print("card rank:", card.rank, "card suit:", card.suit)
-        self.tcp.send_round_update(result, card.rank, card.suit)
+        self.tcp.send_round_update(result, card.rank, card.get_suit_value())
         res = self.tcp.recv_decision()
         return res
     def init_game(self):
-        print("card rank:", self.hand[0].rank, "card suit:", self.hand[0].suit)
         self.tcp.send_round_update(0, self.hand[0].rank, self.hand[0].get_suit_value())
         self.tcp.send_round_update(0, self.hand[1].rank, self.hand[1].get_suit_value())
         return
