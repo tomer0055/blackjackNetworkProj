@@ -26,7 +26,17 @@ class clientNetwork:
     def receive_tcp(self):
         if not self.tcp_socket:
             raise RuntimeError("Not connected to server")
-        return self.tcp_socket.recv(1024)
+
+        data = b''
+        PAYLOAD_SIZE = 9
+
+        while len(data) < PAYLOAD_SIZE:
+            chunk = self.tcp_socket.recv(PAYLOAD_SIZE - len(data))
+            if not chunk:
+                raise RuntimeError("Connection closed by server")
+            data += chunk
+
+        return data
     
     def disconnect(self):
         if self.tcp_socket:

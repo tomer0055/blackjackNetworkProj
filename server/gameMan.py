@@ -15,7 +15,7 @@ class gameManager:
         p = player.player(client_team_name,tcp_cl)
         tb = table(p)
         
-        while(num_rounds>=0):
+        while(num_rounds>0):
             tb.game()
             num_rounds-=1
         

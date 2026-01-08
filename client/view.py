@@ -32,14 +32,24 @@ class view:
             print("You lost this round.")
         elif round_result == 0x1:
             print("This round ended in a tie.")
-def show_round_state(self, player_cards, dealer_card):
-    print("\nYour cards:")
-    for rank, suit in player_cards:
-        self.show_received_card(rank, suit)
+    def show_round_state(self, player_cards, dealer_card):
+        print("\n--- Current Table ---")
 
-    if dealer_card:
-        print("\nDealer card:")
-        self.show_received_card(dealer_card[0], dealer_card[1])
+        print("Player cards:")
+        for rank, suit in player_cards:
+            self.show_received_card(rank, suit)
+
+        if dealer_card:
+            print("\nDealer card:")
+            self.show_received_card(dealer_card[0], dealer_card[1])
+            
+    def show_player_card(self, rank, suit):
+         print("Player:", end=" ")
+         self.show_received_card(rank, suit)
+
+    def show_dealer_card(self, rank, suit):
+        print("Dealer:", end=" ")
+        self.show_received_card(rank, suit)    
         
     def end_game(self, wins, losses, ties):
         total = wins + losses + ties
