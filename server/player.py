@@ -30,15 +30,14 @@ class player(absPlayer):
         return self.wins / self.total_games
     def getTcpClient(self):
         return self.tcp
-    def make_decision(self,result, card):
-        # Send current hand and dealer's visible card to client
-        self.tcp.send_round_update(result, card.rank, card.get_suit_value())
-        res = self.tcp.recv_decision()
-        return res
-    def init_game(self):
-        self.tcp.send_round_update(0, self.hand[0].rank, self.hand[0].get_suit_value())
-        self.tcp.send_round_update(0, self.hand[1].rank, self.hand[1].get_suit_value())
-        return
+    
+   
+    def wait_for_round_result(self):
+        data = self.tcp.recv_decision()
+        return data
+
+
+
 
 
 

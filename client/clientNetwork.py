@@ -14,7 +14,7 @@ class clientNetwork:
     def connect(self, address):
         self.tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         #set timeout in case server is not responding
-        self.tcp_socket.settimeout(10)
+        self.tcp_socket.settimeout(100)
         self.tcp_socket.connect(address)
 
     def send(self, data):

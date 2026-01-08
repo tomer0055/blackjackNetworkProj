@@ -27,5 +27,8 @@ class absPlayer:
         
     def stand(self):
         self.standing = True
+        
+    def is_standing(self):
+        return self.standing
     
     

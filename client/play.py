@@ -19,60 +19,85 @@ class Play:
             self.view.show_round_start(round_index)
             self.play_single_round()
         self.view.end_game(self.wins, self.losses, self.ties)    
-        
-    def play_single_round(self):
+
+    def reset_stats(self):
         self.player_cards = []
         self.dealer_card = None
         self.initial_cards_received = 0
         self.initial_deal_done = False
         self.waiting_for_decision = False
-        
+
+    def get_card(self):
+        data = self.clientNet.receive_tcp()
+        parsed = msgFormatHandler.client_receive_payload_parse(data)
+        if parsed is None:
+            raise RuntimeError("Received invalid initial game payload")
+        round_result, card_rank, card_suit = parsed
+        return round_result, card_rank, card_suit 
+
+    def init_game(self):
+        print("Dealing initial cards...")
+
+        round_result, card_rank, card_suit  =self.get_card()  # First card
+        self.player_cards.append((card_rank, card_suit))
+
+        round_result, card_rank, card_suit  =self.get_card()  # Second card
+        self.player_cards.append((card_rank, card_suit))
+
+        # Check if round is over after initial deal and add 
+        if(round_result != 0x0):
+            self.handle_round_result(round_result)
+            return
+
+        round_result, card_rank, card_suit  =self.get_card()  # Dealer's visible card
+        self.dealer_card = (card_rank, card_suit)
+
+        self.view.show_round_state(self.player_cards, self.dealer_card)
+
+    def ask_player_decision(self):
         
         while True:
-            # Receive payload from server
-            data = self.clientNet.receive_tcp()
+            decision = self.view.ask_player_decision()
+            self.clientNet.send(msgFormatHandler.to_payload_format_client(decision))
+            if(decision == "Stand"):
+                self.stand_decision()
+                return
 
-            # Parse payload using protocol handler
-            parsed = msgFormatHandler.client_receive_payload_parse(data)
-            if parsed is None:
-                self.view.show_error("Received invalid payload, ignoring")
-                continue
-
-            round_result, card_rank, card_suit = parsed
-
-            # Show received card 
-            if card_rank != 0:
-                if self.initial_cards_received < 2:
-                    self.player_cards.append((card_rank, card_suit))
-                    self.initial_cards_received += 1
-                elif self.initial_cards_received == 2:
-                    self.dealer_card = (card_rank, card_suit)
-                    self.initial_cards_received += 1
-                    print("DEBUG: dealer card set to", self.dealer_card)
-                else:            
-                    self.player_cards.append((card_rank, card_suit))
-                    self.waiting_for_decision = False
-                
-                if not self.initial_deal_done and self.initial_cards_received == 3:
-                    self.initial_deal_done = True
-                    self.view.show_round_state(self.player_cards, self.dealer_card)    
-                elif self.initial_deal_done:
-                    self.view.show_player_card(card_rank, card_suit)
-                    
-            # 4. Check if round is over
-            if round_result != 0x0:
-                self.handle_round_result(round_result)
-                break
-            
-            if self.initial_cards_received >= 3 and not self.waiting_for_decision:
-                self.waiting_for_decision = True    
-                # 5. Ask player decision
-                decision = self.view.ask_player_decision()
+            if(decision == "Hittt"):
+                res=self.hit_decision() 
+                if(res == -1):
+                    return
 
 
-                # 6. Send decision to server
-                packet = msgFormatHandler.to_payload_format_client(decision)
-                self.clientNet.send(packet)
+    def stand_decision(self):
+        round_result, card_rank, card_suit  =self.get_card()
+        self.view.show_dealer_card(card_rank, card_suit)
+        while round_result == 0x0:
+            round_result, card_rank, card_suit  =self.get_card()
+            self.view.show_dealer_card(card_rank, card_suit)
+        self.handle_round_result(round_result)
+    
+    def hit_decision(self):
+        round_result, card_rank, card_suit  =self.get_card()
+        print(f"Received card after hit. result{round_result}")
+        self.player_cards.append((card_rank, card_suit))
+        self.view.show_player_card(card_rank, card_suit)
+        if round_result != 0x0:
+            print(f"Received round result after hit. Result: {round_result}, Card: {card_rank} of {card_suit}")
+            self.handle_round_result(round_result)
+            return -1
+        return 0
+
+        
+
+
+
+    def play_single_round(self):
+        print("Starting a new round...")
+        self.reset_stats()
+        self.init_game()
+        self.ask_player_decision()
+    
 
                 
                 
@@ -84,4 +109,6 @@ class Play:
             self.losses += 1
         elif round_result == 0x1:
             self.ties += 1               
+        
+
     

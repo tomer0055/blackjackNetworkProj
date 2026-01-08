@@ -76,6 +76,10 @@ class TcpClient:
             round_result, card_rank, card_suit
         )
         try:
+            print("Sending payload to client...\n")
+            print(f"round result: {round_result}, card_rank: {card_rank}, card_suit: {card_suit}\n")
+            if(round_result !=0):
+                print("Sent payload indicating round over.\n")
             self.socket.sendall(payload)
         except Exception as e:
             self.close()

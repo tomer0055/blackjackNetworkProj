@@ -1,5 +1,5 @@
 from server.table import table
-from server import player
+from server.player import player
 import socket
 from server.UdpMan import UdpMan
 from  network_module.TcpClient  import TcpClient
@@ -15,12 +15,13 @@ class gameManager:
             print(f"Starting game with client at {addr}")
             tcp_cl = TcpClient(conn, addr)
             num_rounds,client_team_name = tcp_cl.recv_request()
-            p = player.player(client_team_name,tcp_cl)
+            p = player(client_team_name,tcp_cl)
             tb = table(p)
             
-            while(num_rounds>=0):
+            while(num_rounds > 0):
                 tb.game()
                 num_rounds-=1
+            
         except Exception as e:
             print(f"Error during game with client at {addr}: {e}")
         finally:
