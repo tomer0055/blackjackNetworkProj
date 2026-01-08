@@ -8,6 +8,9 @@ class Play:
         self.wins = 0
         self.losses = 0
         self.ties = 0
+        self.player_cards = []
+        self.dealer_card = None
+        self.initial_cards_received = 0
 
     def start_game(self,roundsNum):
         self.ui.show_game_start(roundsNum)
@@ -17,6 +20,10 @@ class Play:
         self.ui.end_game(self.wins, self.losses, self.ties)    
         
     def play_single_round(self):
+        self.player_cards = []
+        self.dealer_card = None
+        self.initial_cards_received = 0
+        
         while True:
             # Receive payload from server
             data = self.clientNet.receive_tcp()
