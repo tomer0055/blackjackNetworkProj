@@ -4,7 +4,7 @@ class clientNetwork:
     def __init__(self):
         self.udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.udp_socket.setsockopt(socket.SOL_SOCKET,  socket.SO_REUSEPORT, 1)
+        #self.udp_socket.setsockopt(socket.SOL_SOCKET,  socket.SO_REUSEPORT, 1)
         self.udp_socket.bind(('', self.UDP_PORT))
         self.tcp_socket = None
     

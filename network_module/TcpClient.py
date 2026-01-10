@@ -30,12 +30,17 @@ class TcpClient:
 
         chunks = []
         got = 0
-        while got < n:
-            part = self.socket.recv(n - got)
-            if not part:  
-                return None
-            chunks.append(part)
-            got += len(part)
+        try:
+            while got < n:
+                part = self.socket.recv(n - got)
+                if not part:  
+                    return None
+                chunks.append(part)
+                got += len(part)
+        except socket.timeout:
+            return None
+        except (ConnectionResetError, BrokenPipeError):
+            return None        
         return b"".join(chunks)
 
     
@@ -63,7 +68,7 @@ class TcpClient:
         elif str1 == "Stand":
             return 0
         else :
-            raise RuntimeError("Invalid decision received from client")
+            raise ValueError(f"Invalid decision received: {str1}")
 
     def send_round_update(self, round_result: int, card_rank: int, card_suit: int):
         """
