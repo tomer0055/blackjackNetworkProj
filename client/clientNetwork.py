@@ -4,12 +4,16 @@ class clientNetwork:
     def __init__(self):
         self.udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        #self.udp_socket.setsockopt(socket.SOL_SOCKET,  socket.SO_REUSEPORT, 1)
+        self.udp_socket.setsockopt(socket.SOL_SOCKET,  socket.SO_REUSEPORT, 1)
         self.udp_socket.bind(('', self.UDP_PORT))
         self.tcp_socket = None
     
     def receive_udp(self):# udp recv
+        
+        
+        
         data, addr = self.udp_socket.recvfrom(1024)
+        
         return data, addr[0]
     def connect(self, address):
         self.tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
