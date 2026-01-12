@@ -8,7 +8,7 @@ class Play:
         self.losses = 0
         self.ties = 0
         self.player_cards = []
-        self.dealer_card = None
+        self.dealer_cards = []
         self.initial_cards_received = 0
         self.initial_deal_done = False
         self.waiting_for_decision = False
@@ -22,10 +22,11 @@ class Play:
 
     def reset_stats(self):
         self.player_cards = []
-        self.dealer_card = None
+        self.dealer_cards = []
         self.initial_cards_received = 0
         self.initial_deal_done = False
         self.waiting_for_decision = False
+        self.view.hide_dealer_second_card = True
 
     def get_card(self):
         data = self.clientNet.receive_tcp()
@@ -50,9 +51,10 @@ class Play:
             return
 
         round_result, card_rank, card_suit  =self.get_card()  # Dealer's visible card
-        self.dealer_card = (card_rank, card_suit)
+        self.dealer_cards.append((card_rank, card_suit))
+        
 
-        self.view.show_round_state(self.player_cards, self.dealer_card)
+        self.view.show_round_state(self.player_cards, self.dealer_cards)
 
     def ask_player_decision(self):
         
@@ -70,20 +72,22 @@ class Play:
 
 
     def stand_decision(self):
+        self.view.hide_dealer_second_card = False
         round_result, card_rank, card_suit  =self.get_card()
-        self.view.show_dealer_card(card_rank, card_suit)
+        self.dealer_cards.append((card_rank, card_suit))
+        self.view.show_round_state(self.player_cards, self.dealer_cards)
+        
         while round_result == 0x0:
             round_result, card_rank, card_suit  =self.get_card()
-            self.view.show_dealer_card(card_rank, card_suit)
+            self.dealer_cards.append((card_rank, card_suit))
+            self.view.show_round_state(self.player_cards, self.dealer_cards)
         self.handle_round_result(round_result)
     
     def hit_decision(self):
         round_result, card_rank, card_suit  =self.get_card()
-        print(f"Received card after hit. result{round_result}")
         self.player_cards.append((card_rank, card_suit))
-        self.view.show_player_card(card_rank, card_suit)
+        self.view.show_round_state(self.player_cards, self.dealer_cards)
         if round_result != 0x0:
-            print(f"Received round result after hit. Result: {round_result}, Card: {card_rank} of {card_suit}")
             self.handle_round_result(round_result)
             return -1
         return 0

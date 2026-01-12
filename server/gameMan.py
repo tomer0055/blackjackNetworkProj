@@ -16,7 +16,12 @@ class gameManager:
         try:
             print(f"Starting game with client at {addr}")
             tcp_cl = TcpClient(conn, addr)
-            num_rounds,client_team_name = tcp_cl.recv_request()
+            req = tcp_cl.recv_request()
+            if req is None:
+                print(f"Client {addr} disconnected before init request")
+                return
+
+            num_rounds, client_team_name = req
             if num_rounds is None or client_team_name is None:
                 print(f"Invalid initial request from client at {addr}. Ending game.")
                 return
@@ -61,7 +66,10 @@ if __name__ == "__main__":
         sc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sc.bind(("", tcp_port))    
         sc.listen()
+       
         gameManager.game_loop(sc)
+    except KeyboardInterrupt:
+        print("\nServer shutting down by user")    
     except Exception as e:
         print(f"Failed to start TCP server on port {tcp_port}: {e}")
         exit(1)

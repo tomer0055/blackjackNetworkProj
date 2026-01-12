@@ -34,6 +34,8 @@ class player(absPlayer):
    
     def wait_for_round_result(self):
         data = self.tcp.recv_decision()
+        if data is None:
+            raise ConnectionResetError("Client disconnected during round")
         return data
 
 

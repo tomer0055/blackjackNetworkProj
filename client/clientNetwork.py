@@ -9,7 +9,11 @@ class clientNetwork:
         self.tcp_socket = None
     
     def receive_udp(self):# udp recv
+        
+        
+        
         data, addr = self.udp_socket.recvfrom(1024)
+        
         return data, addr[0]
     def connect(self, address):
         self.tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
